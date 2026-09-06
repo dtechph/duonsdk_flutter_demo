@@ -74,9 +74,17 @@
 	<string>We use Bluetooth to detect nearby beacons for accurate indoor positioning.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>We use your phone's motion sensors to improve indoor location accuracy.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app reaches the Duon map service on your local network during development.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_http._tcp</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>
+		<true/>
+		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
 </dict>

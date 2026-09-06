@@ -52,11 +52,10 @@ packages:
   duonsdk:
     dependency: "direct main"
     description:
-      name: duonsdk
-      sha256: d5079b6450fe8137dd83d1b6d788b2bff2661e6e4876dfa8f35e59cedc0ec357
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
+      path: "../../DuonCore/DuonSDK/packages/flutter"
+      relative: true
+    source: path
+    version: "1.6.0"
   fake_async:
     dependency: transitive
     description:

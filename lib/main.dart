@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:duonsdk/duonsdk.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -104,8 +106,9 @@ class _WayfindingScreenState extends State<WayfindingScreen>
       loading = true;
       error = null;
     });
+    // Location is only for native Situm — fetch malls without waiting on the dialogs.
+    unawaited(_requestLocation());
     try {
-      await _requestLocation();
       DuonWayfinding.initialize(
         apiBaseUrl: apiUrl,
         apiKey: _apiKey,
@@ -130,8 +133,12 @@ class _WayfindingScreenState extends State<WayfindingScreen>
       _fail("This app's Duon API key is invalid. Please contact support.");
     } on DuonForbiddenError {
       _fail("This app's Duon API key is missing map access.");
-    } on DuonNetworkError {
-      _fail('Could not reach the map service. Check your connection.');
+    } on DuonNetworkError catch (err) {
+      _fail(
+        kDebugMode
+            ? 'Could not reach $apiUrl. ${err.message}'
+            : 'Could not reach the map service. Check your connection.',
+      );
     } catch (err) {
       _fail(err.toString());
     }
