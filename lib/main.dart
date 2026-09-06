@@ -127,11 +127,11 @@ class _WayfindingScreenState extends State<WayfindingScreen>
         loading = false;
       });
     } on DuonAuthError {
-      _fail('Invalid API key. Create one in CMS → SDK Keys.');
+      _fail("This app's Duon API key is invalid. Please contact support.");
     } on DuonForbiddenError {
-      _fail('API key lacks Map Viewer scope.');
-    } on DuonNetworkError catch (err) {
-      _fail('Network error: ${err.message}');
+      _fail("This app's Duon API key is missing map access.");
+    } on DuonNetworkError {
+      _fail('Could not reach the map service. Check your connection.');
     } catch (err) {
       _fail(err.toString());
     }
@@ -158,12 +158,14 @@ class _WayfindingScreenState extends State<WayfindingScreen>
       );
     }
 
-    // Native Situm needs a runtime location grant. Fall back to the web
-    // viewer so kiosk malls and denied-permission Situm malls still render.
+    // Pass mall so Situm uses the native map and automatic analytics
+    // (poi_select, poi_category_selected, route_request, navigation_request).
+    // Fall back to the web viewer when location is denied so the floor plan
+    // still renders. A POI tap is not reported as a search.
     final useNativeSitum =
         locationGranted && mall.mapType == MallMapType.situm;
     return DuonMapView(
-      mall: useNativeSitum ? mall : null,
+      mall: useNativeSitum || mall.mapType != MallMapType.situm ? mall : null,
       url: useNativeSitum ? null : mall.viewerUrl,
     );
   }
@@ -191,7 +193,7 @@ class _WayfindingScreenState extends State<WayfindingScreen>
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'CMS malls via pub.dev duonsdk',
+                    'Malls via pub.dev duonsdk',
                     style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
                   ),
                 ],
