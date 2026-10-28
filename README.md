@@ -3,9 +3,8 @@
 Sample Flutter app that lists malls from the Duon backend and displays the selected
 map via **`duonsdk`**.
 
-**This repo is wired to the local SDK** at `DuonCore/DuonSDK/packages/flutter` (see
-`pubspec.yaml`). To use [pub.dev](https://pub.dev/packages/duonsdk) instead, replace the
-`path:` dependency with `duonsdk: ^2.0.1`.
+**This repo uses the published SDK** [`duonsdk` 2.1.0](https://pub.dev/packages/duonsdk)
+from pub.dev (see `pubspec.yaml`).
 
 Situm malls use native indoor positioning when location permission is granted; otherwise
 the web viewer is used. Native Situm reports `poi_select`, category taps, directions, and
@@ -21,7 +20,7 @@ turn-by-turn start automatically. A POI tap is not counted as a search.
 
 For a local backend: `duon_backend` on port `8080` with an SDK key seeded.
 
-## Connect to local SDK
+## Install the published SDK
 
 From this directory:
 
@@ -29,15 +28,14 @@ From this directory:
 flutter pub get
 ```
 
-The path dependency is:
+`pubspec.yaml` depends on the hosted package:
 
 ```yaml
-duonsdk:
-  path: ../../DuonCore/DuonSDK/packages/flutter
+duonsdk: 2.1.0
 ```
 
-After you change Dart code in the SDK package, hot reload/restart the demo app; for native
-plugin changes, do a full rebuild (`flutter run` again or `cd ios && pod install` on iOS).
+A full rebuild is required after this switch (`flutter run` again). Hot reload does not
+replace the native Situm library that ships inside `duonsdk`.
 
 ## Environment (`.env`)
 

@@ -1,5 +1,5 @@
 name: duonsdk_flutter_demo
-description: "DuonSDK Flutter sample — mall maps from the local duonsdk package"
+description: "DuonSDK Flutter sample — mall maps from the published duonsdk package"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -34,9 +34,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  # Local DuonSDK (switch back to `duonsdk: ^2.0.1` for pub.dev)
-  duonsdk:
-    path: ../../DuonCore/DuonSDK/packages/flutter
+  # Published package. https://pub.dev/packages/duonsdk
+  duonsdk: 2.1.0
   permission_handler: ^12.0.1
 
 dev_dependencies:
