@@ -200,7 +200,7 @@ class _WayfindingScreenState extends State<WayfindingScreen>
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'duonsdk 1.8.0 (pub.dev)',
+                    'local duonsdk 2.0.1',
                     style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
                   ),
                 ],

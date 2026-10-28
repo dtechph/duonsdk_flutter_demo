@@ -5,7 +5,7 @@ map via **`duonsdk`**.
 
 **This repo is wired to the local SDK** at `DuonCore/DuonSDK/packages/flutter` (see
 `pubspec.yaml`). To use [pub.dev](https://pub.dev/packages/duonsdk) instead, replace the
-`path:` dependency with `duonsdk: ^2.0.0`.
+`path:` dependency with `duonsdk: ^2.0.1`.
 
 Situm malls use native indoor positioning when location permission is granted; otherwise
 the web viewer is used. Native Situm reports `poi_select`, category taps, directions, and
