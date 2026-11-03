@@ -3,8 +3,9 @@
 Sample Flutter app that lists malls from the Duon backend and displays the selected
 map via **`duonsdk`**.
 
-**This repo uses the published SDK** [`duonsdk` 2.1.0](https://pub.dev/packages/duonsdk)
-from pub.dev (see `pubspec.yaml`).
+**This demo uses the local SDK** at `DuonCore/DuonSDK/packages/flutter` (`duonsdk` 2.2.1).
+That build reloads the Situm map when turn-by-turn finishes or the user leaves navigation,
+so POI labels stay attached to the floor plan.
 
 Situm malls use native indoor positioning when location permission is granted; otherwise
 the web viewer is used. Native Situm reports `poi_select`, category taps, directions, and
@@ -20,7 +21,7 @@ turn-by-turn start automatically. A POI tap is not counted as a search.
 
 For a local backend: `duon_backend` on port `8080` with an SDK key seeded.
 
-## Install the published SDK
+## Install the local SDK
 
 From this directory:
 
@@ -28,10 +29,11 @@ From this directory:
 flutter pub get
 ```
 
-`pubspec.yaml` depends on the hosted package:
+`pubspec.yaml` depends on the SDK in this workspace:
 
 ```yaml
-duonsdk: 2.1.0
+duonsdk:
+  path: ../../DuonCore/DuonSDK/packages/flutter
 ```
 
 A full rebuild is required after this switch (`flutter run` again). Hot reload does not
