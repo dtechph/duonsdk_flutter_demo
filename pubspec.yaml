@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   # Published package. https://pub.dev/packages/duonsdk
-  duonsdk: 2.1.0
+  duonsdk: 2.2.0
   permission_handler: ^12.0.1
 
 dev_dependencies:
