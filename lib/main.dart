@@ -1,9 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:duonsdk/duonsdk.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// Android emulator cannot reach the host via localhost — use 10.0.2.2.
@@ -60,6 +59,7 @@ class _WayfindingScreenState extends State<WayfindingScreen>
   DuonMall? selectedMall;
   bool loading = true;
   String? error;
+  bool permissionsReady = false;
   bool locationGranted = false;
 
   String get apiUrl => resolveApiUrl(_rawApiUrl);
@@ -85,6 +85,8 @@ class _WayfindingScreenState extends State<WayfindingScreen>
     }
   }
 
+  /// Situm native setup: request location before DuonMapView mounts.
+  /// Android 12+ also needs Bluetooth scan for beacon positioning.
   Future<void> _requestLocation() async {
     try {
       final statuses = await [
@@ -92,12 +94,26 @@ class _WayfindingScreenState extends State<WayfindingScreen>
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
       ].request();
-      final granted =
-          statuses[Permission.locationWhenInUse]?.isGranted ?? false;
+      var granted = statuses[Permission.locationWhenInUse]?.isGranted ?? false;
+      if (granted &&
+          Platform.isIOS &&
+          await Geolocator.getLocationAccuracy() ==
+              LocationAccuracyStatus.reduced) {
+        await Geolocator.requestTemporaryFullAccuracy(
+          purposeKey: 'PreciseLocationPurpose',
+        );
+      }
       if (!mounted) return;
-      setState(() => locationGranted = granted);
+      setState(() {
+        locationGranted = granted;
+        permissionsReady = true;
+      });
     } catch (_) {
-      // Tests and hosts without the native plugin still render the web viewer.
+      if (!mounted) return;
+      setState(() {
+        locationGranted = false;
+        permissionsReady = true;
+      });
     }
   }
 
@@ -105,9 +121,9 @@ class _WayfindingScreenState extends State<WayfindingScreen>
     setState(() {
       loading = true;
       error = null;
+      permissionsReady = false;
     });
-    // Location is only for native Situm — fetch malls without waiting on the dialogs.
-    unawaited(_requestLocation());
+    await _requestLocation();
     try {
       DuonWayfinding.initialize(
         apiBaseUrl: apiUrl,
@@ -133,12 +149,10 @@ class _WayfindingScreenState extends State<WayfindingScreen>
       _fail("This app's Duon API key is invalid. Please contact support.");
     } on DuonForbiddenError {
       _fail("This app's Duon API key is missing map access.");
-    } on DuonNetworkError catch (err) {
-      _fail(
-        kDebugMode
-            ? 'Could not reach $apiUrl. ${err.message}'
-            : 'Could not reach the map service. Check your connection.',
-      );
+    } on DuonConfigError catch (err) {
+      _fail(err.message);
+    } on DuonNetworkError {
+      _fail('Could not reach the map service. Check your connection.');
     } catch (err) {
       _fail(err.toString());
     }
@@ -165,16 +179,21 @@ class _WayfindingScreenState extends State<WayfindingScreen>
       );
     }
 
-    // Pass mall so Situm uses the native map and automatic analytics
-    // (poi_select, poi_category_selected, route_request, navigation_request).
-    // Fall back to the web viewer when location is denied so the floor plan
-    // still renders. A POI tap is not reported as a search.
-    final useNativeSitum =
-        locationGranted && mall.mapType == MallMapType.situm;
-    return DuonMapView(
-      mall: useNativeSitum || mall.mapType != MallMapType.situm ? mall : null,
-      url: useNativeSitum ? null : mall.viewerUrl,
-    );
+    if (!permissionsReady) {
+      return const Center(
+        child: Text(
+          'Loading…',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 15, color: Color(0xFF6B7280)),
+        ),
+      );
+    }
+
+    // Native Situm when location is granted. Otherwise the web viewer,
+    // so a denied permission still shows the floor plan.
+    return locationGranted
+        ? DuonMapView(mall: mall)
+        : DuonMapView(url: mall.viewerUrl);
   }
 
   @override
@@ -185,27 +204,6 @@ class _WayfindingScreenState extends State<WayfindingScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'DuonSDK Flutter Demo',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF111827),
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    'duonsdk 2.1.0',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
-                  ),
-                ],
-              ),
-            ),
             DuonMallSelector(
               malls: malls,
               selectedMall: selectedMall,

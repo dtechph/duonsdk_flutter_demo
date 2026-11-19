@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   # Published package. https://pub.dev/packages/duonsdk
   duonsdk: 2.2.0
+  geolocator: ^13.0.4
   permission_handler: ^12.0.1
 
 dev_dependencies:

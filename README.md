@@ -3,7 +3,7 @@
 Sample Flutter app that lists malls from the Duon backend and displays the selected
 map via **`duonsdk`**.
 
-**This repo uses the published SDK** [`duonsdk` 2.1.0](https://pub.dev/packages/duonsdk)
+**This repo uses the published SDK** [`duonsdk` 2.2.0](https://pub.dev/packages/duonsdk)
 from pub.dev (see `pubspec.yaml`).
 
 Situm malls use native indoor positioning when location permission is granted; otherwise
@@ -31,7 +31,7 @@ flutter pub get
 `pubspec.yaml` depends on the hosted package:
 
 ```yaml
-duonsdk: 2.1.0
+duonsdk: 2.2.0
 ```
 
 A full rebuild is required after this switch (`flutter run` again). Hot reload does not
@@ -140,10 +140,10 @@ Then `flutter run -d <ip:port>` without USB.
 
 ```
 lib/main.dart
-  → DuonWayfinding.initialize + fetchMalls()
+  → request location, then DuonWayfinding.initialize + fetchMalls()
   → DuonMallSelector (pick mall)
-  → DuonMapView(mall: …) for Situm when location is granted
-  → DuonMapView(url: viewerUrl) fallback (kiosk, or Situm without permission)
+  → DuonMapView(mall: …) when location is granted
+  → DuonMapView(url: viewerUrl) when location is denied
 ```
 
 ## Troubleshooting
