@@ -7,8 +7,9 @@ map via **`duonsdk`**.
 from pub.dev (see `pubspec.yaml`).
 
 Situm malls use native indoor positioning when location permission is granted; otherwise
-the web viewer is used. Native Situm reports `poi_select`, category taps, directions, and
-turn-by-turn start automatically. A POI tap is not counted as a search.
+the web viewer is used. Native Situm reports `poi_select`, category taps, and
+turn-by-turn start automatically. A `route_request` is logged only when the user starts
+**Get Directions** in the Situm map. A POI tap is not counted as a search.
 
 ## Prerequisites
 

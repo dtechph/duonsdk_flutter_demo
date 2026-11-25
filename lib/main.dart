@@ -167,6 +167,12 @@ class _WayfindingScreenState extends State<WayfindingScreen>
     });
   }
 
+  void _selectMall(DuonMall mall) {
+    setState(() {
+      selectedMall = mall;
+    });
+  }
+
   Widget _map() {
     final mall = selectedMall;
     if (mall == null) {
@@ -207,7 +213,7 @@ class _WayfindingScreenState extends State<WayfindingScreen>
             DuonMallSelector(
               malls: malls,
               selectedMall: selectedMall,
-              onSelect: (mall) => setState(() => selectedMall = mall),
+              onSelect: _selectMall,
               loading: loading,
               error: error,
               onRetry: loadMalls,
